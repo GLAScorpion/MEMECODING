@@ -3,8 +3,21 @@ import turtle
 import mygui as ui
 
 def main():
-    prova = nand(value=[True , True , True , True])
-    print(prova.state)
+    d1 = data(True)
+    d2 = data(False)
+    d3 = data(True)
+    d4 = data(False)
+    gates = gatelist([d1,d2,d3,d4])
+    print(gates.datalist)
+    mk1 = nand(gates,[-1,-3])
+    mk2 = nand(gates,[-2,-4])
+    mk3 = nand(gates,[0,1])
+    print(gates.nandlist)
+    gates.additem(mk1)
+    gates.additem(mk2)
+    gates.additem(mk3)
+    print(mk1.state + "\n" + mk2.state + "\n" + mk3.state)
+    
 
 class data:
     num = -1
@@ -16,7 +29,7 @@ class data:
     
     def dynstate(self):
         return self.state
-        
+
 class nand:
     num = 0
 
@@ -30,7 +43,7 @@ class nand:
 
     def update(self):
         for y in self.items:
-            #print(str(self.state) + " " + str(x))
+            print(str(self.state) + " " + str(y))
             x = self.archive.getitem(y)
             self.state = self.state and x.dynstate()
         self.state = not self.state
@@ -52,17 +65,17 @@ class gatelist:
 
     def additem(self,item):
         if isinstance(item,data):
-            self.datalist += item
+            self.datalist.append(item)
         elif isinstance(item,nand):
-            self.nandlist += item
+            self.nandlist.append(item)
         else:
             raise TypeError("Incorrect data type in list")
 
     def getitem(self,item):
-        if item>=0:
-            return self.archive.nandlist[item]
+        if int(item)>=0:
+            return self.nandlist[item]
         else:
-            return self.archive.datalist[-item-1]
+            return self.datalist[-item-1]
 
     def removeitem(self,item):
         if isinstance(item,(data,nand)):
