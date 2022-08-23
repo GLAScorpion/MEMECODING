@@ -33,7 +33,7 @@ public class Dama{
                 }
             }while(insertCicle);
             boolean[] tmp = dama.checkNextMove(x, y);
-            int choice = chooseDir(tmp);
+            int choice = chooseDir(tmp, s);
             int previusPlayer = dama.getPlayer(player);
             if(!dama.move(x, y, choice)){
                 throw new UnknownError();
@@ -45,8 +45,10 @@ public class Dama{
                     y += DamaBoard.ydirCalc(choice) * 2;
                     tmp = dama.checkNextEat(x, y);
                     if(tmp[0] || tmp[1] || tmp[2] || tmp[3]){
-                        choice = chooseDir(tmp);
+                        choice = chooseDir(tmp,s);
                         dama.move(x, y, choice);
+                        System.out.println("\033[H\033[2J");
+                        System.out.println(dama.toString());
                     }else{
                         eatCicle = false;
                     }
@@ -72,9 +74,8 @@ public class Dama{
         }while(true);
         s.close();
     }
-    private static int chooseDir(boolean[] tmp){
-        Scanner s = new Scanner(System.in);
-        System.out.println("Scegli direzione ()");
+    private static int chooseDir(boolean[] tmp, Scanner scanner){
+        System.out.println("Scegli direzione");
             if(tmp[0]){
                 System.out.print("(0) up dx\t");
             } if(tmp[1]){
@@ -88,17 +89,16 @@ public class Dama{
             int choice = -1;
             do {
                 try{
-                    choice = s.nextInt();
+                    choice = scanner.nextInt();
                     if(!tmp[choice]){
                         System.out.println("Inserisci valori in range. Riprova");    
                     }else{
-                        s.close();
                         return choice;
                     }
                 }
                 catch(InputMismatchException e){
                     System.out.println("Errore. Inserisci valori numerici");
-                    s.nextLine();
+                    scanner.nextLine();
                 }
                 catch(ArrayIndexOutOfBoundsException e){
                     System.out.println("Inserisci valori in range. Riprova");
