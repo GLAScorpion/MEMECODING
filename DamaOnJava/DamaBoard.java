@@ -24,7 +24,7 @@ public class DamaBoard {
     }
     public void boardPromote(boolean clr){
         int index = 0;
-        if(clr){
+        if(!clr){
             index = 7;
         }
         for(int a = 0; a < 8; a++){
@@ -50,6 +50,18 @@ public class DamaBoard {
             blackPlayer--;
         }
     }
+    public DamaBoard clone(){
+        DamaBoard out = new DamaBoard();
+        for(int a = 0; a < 8; a++){
+            for(int b = 0; b < 8; b++){
+                try{
+                    out.board[a][b] = board[a][b];
+                }
+                catch(NullPointerException e){}
+            }
+        }
+        return out;
+    }
     public static int ydirCalc(int dir){
         if(dir == 0 || dir== 3 ) return -1;
         return 1;
@@ -60,65 +72,59 @@ public class DamaBoard {
     }
     public boolean[] checkNextMove(int xOrigin, int yOrigin){
         boolean[] result = new boolean[4];
-        DamaBoard tmp = new DamaBoard();
-        System.arraycopy(board, 0, tmp.board, 0, 8);
+        DamaBoard tmp = this.clone();
         boolean colorOrigin = tmp.board[yOrigin][xOrigin].getColor();
         boolean damaOrigin = tmp.board[yOrigin][xOrigin].isDama();
         if(colorOrigin || damaOrigin){
-            if(move(xOrigin,yOrigin,0)){
+            if(tmp.move(xOrigin,yOrigin,0)){
                 result[0] = true;
-                tmp.board[yOrigin][xOrigin] = new DamaPedina(colorOrigin, damaOrigin);
-                tmp.subPawn(colorOrigin);
             }
-            if(move(xOrigin,yOrigin,3)){
+            tmp.board[yOrigin][xOrigin] = new DamaPedina(colorOrigin, damaOrigin);
+            if(tmp.move(xOrigin,yOrigin,3)){
                 result[3] = true;
-                tmp.board[yOrigin][xOrigin] = new DamaPedina(colorOrigin, damaOrigin);
-                tmp.subPawn(colorOrigin);
             }
+            tmp.board[yOrigin][xOrigin] = new DamaPedina(colorOrigin, damaOrigin);
         }
         if(!colorOrigin || damaOrigin){
-            if(move(xOrigin,yOrigin,1)){
+            if(tmp.move(xOrigin,yOrigin,1)){
                 result[1] = true;
-                tmp.board[yOrigin][xOrigin] = new DamaPedina(colorOrigin, damaOrigin);
-                tmp.subPawn(colorOrigin);
             }
-            if(move(xOrigin,yOrigin,2)){
+            tmp.board[yOrigin][xOrigin] = new DamaPedina(colorOrigin, damaOrigin);
+            if(tmp.move(xOrigin,yOrigin,2)){
                 result[2] = true;
-                tmp.board[yOrigin][xOrigin] = new DamaPedina(colorOrigin, damaOrigin);
-                tmp.subPawn(colorOrigin);
             }
+            tmp.board[yOrigin][xOrigin] = new DamaPedina(colorOrigin, damaOrigin);
         }
         return result;
     }
     public boolean[] checkNextEat(int xOrigin, int yOrigin){//XXXX == 0 1 2 3
         boolean[] result=new boolean[4];
-        DamaBoard tmp = new DamaBoard();
-        System.arraycopy(board, 0, tmp.board, 0, 8);
+        DamaBoard tmp = this.clone();
         boolean colorOrigin = tmp.board[yOrigin][xOrigin].getColor();
         boolean damaOrigin = tmp.board[yOrigin][xOrigin].isDama();
         if(colorOrigin || damaOrigin){
-            if(move(xOrigin,yOrigin,0) && (tmp.blackPlayer == 1 || tmp.whitePlayer==1)){
+            if(tmp.move(xOrigin,yOrigin,0) && (tmp.blackPlayer == 1 || tmp.whitePlayer==1)){
                 result[0] = true;
-                tmp.board[yOrigin][xOrigin] = new DamaPedina(colorOrigin, damaOrigin);
                 tmp.subPawn(colorOrigin);
             }
-            if(move(xOrigin,yOrigin,3) && (tmp.blackPlayer == 1 || tmp.whitePlayer==1)){
+            tmp.board[yOrigin][xOrigin] = new DamaPedina(colorOrigin, damaOrigin);
+            if(tmp.move(xOrigin,yOrigin,3) && (tmp.blackPlayer == 1 || tmp.whitePlayer==1)){
                 result[3] = true;
-                tmp.board[yOrigin][xOrigin] = new DamaPedina(colorOrigin, damaOrigin);
                 tmp.subPawn(colorOrigin);
             }
+            tmp.board[yOrigin][xOrigin] = new DamaPedina(colorOrigin, damaOrigin);
         }
         if(!colorOrigin || damaOrigin){
-            if(move(xOrigin,yOrigin,1) && (tmp.blackPlayer == 1 || tmp.whitePlayer==1)){
+            if(tmp.move(xOrigin,yOrigin,1) && (tmp.blackPlayer == 1 || tmp.whitePlayer==1)){
                 result[1] = true;
-                tmp.board[yOrigin][xOrigin] = new DamaPedina(colorOrigin, damaOrigin);
                 tmp.subPawn(colorOrigin);
             }
-            if(move(xOrigin,yOrigin,2) && (tmp.blackPlayer == 1 || tmp.whitePlayer==1)){
+            tmp.board[yOrigin][xOrigin] = new DamaPedina(colorOrigin, damaOrigin);
+            if(tmp.move(xOrigin,yOrigin,2) && (tmp.blackPlayer == 1 || tmp.whitePlayer==1)){
                 result[2] = true;
-                tmp.board[yOrigin][xOrigin] = new DamaPedina(colorOrigin, damaOrigin);
                 tmp.subPawn(colorOrigin);
             }
+            tmp.board[yOrigin][xOrigin] = new DamaPedina(colorOrigin, damaOrigin);
         }
         return result;
     }
@@ -146,7 +152,7 @@ public class DamaBoard {
                 board[yOrigin][xOrigin] = null;
                 board[yOrigin + ydirCalc(dir)][xOrigin + xdirCalc(dir)] = null;
                 addPawn(colorOrigin);
-                return true;
+                return true;               
             }
             return false;
         }
@@ -185,8 +191,9 @@ public class DamaBoard {
         return -1;
     }
     public String toString(){
-        String s = "";
+        String s = "  0 1 2 3 4 5 6 7\n";
         for(int a = 0; a < 8; a++){
+            s += a + " ";
             for(int b = 0; b < 8; b++){
                 try{
                     if(board[a][b].getColor() && !board[a][b].isDama()){
