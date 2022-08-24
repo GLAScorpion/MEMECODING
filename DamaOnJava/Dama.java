@@ -47,14 +47,16 @@ public class Dama{
                     if(tmp[0] || tmp[1] || tmp[2] || tmp[3]){
                         choice = chooseDir(tmp,s);
                         dama.move(x, y, choice);
-                        System.out.println("\033[H\033[2J");
-                        System.out.println(dama.toString());
                     }else{
                         eatCicle = false;
                     }
+                    System.out.println("\033[H\033[2J");
+                    System.out.println(dama.toString());
                 } while (eatCicle);
             }
             dama.boardPromote(player);
+            System.out.println("\033[H\033[2J");
+            System.out.println(dama.toString());
             int winCond = dama.whoWon();
             if(winCond == 1){
                 System.out.println("Giocatore di razza superiore ha vinto.");

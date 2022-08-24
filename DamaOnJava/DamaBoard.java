@@ -172,11 +172,11 @@ public class DamaBoard {
             for(int b = 0; b < 8; b++ ){
                 try{
                     tmp = this.checkNextMove(b, a);
+                    if((tmp[0] || tmp[1] || tmp[2] || tmp[3])&&(board[a][b].getColor()==clr)){
+                        return true;
+                    }
                 }
                 catch(NullPointerException e){/* left empty */}
-                if(tmp[0] || tmp[1] || tmp[2] || tmp[3]){
-                    return true;
-                }
             }
         }
         return false;
@@ -191,31 +191,32 @@ public class DamaBoard {
         return -1;
     }
     public String toString(){
-        String s = "  0 1 2 3 4 5 6 7\n";
+        String s =   "    0   1   2   3   4   5   6   7\n";
         for(int a = 0; a < 8; a++){
-            s += a + " ";
+            s +=     "  +---+---+---+---+---+---+---+---+\n" + a + " ";
             for(int b = 0; b < 8; b++){
                 try{
                     if(board[a][b].getColor() && !board[a][b].isDama()){
-                        s += "w ";
+                        s += "| w ";
                     }else if(!board[a][b].isDama()){
-                        s += "b ";
+                        s += "| b ";
                     }else if(board[a][b].getColor()){
-                        s += "W ";
+                        s += "| W ";
                     }else{
-                        s += "B ";
+                        s += "| B ";
                     }
                 }
                 catch(NullPointerException e){
                     if((a + b + 1)%2==0){
-                        s += "  ";
+                        s += "|   ";
                     }else{
-                        s += "■ ";
+                        s += "|\u2588\u2588\u2588";
                     }
                 }
             }
-            s+= "\n";
+            s+= "|\n";
         }
+        s +=     "  +---+---+---+---+---+---+---+---+\n";
         return s;
     }
     private void fillBoard(){
@@ -231,3 +232,34 @@ public class DamaBoard {
         }
     }
 }
+
+/* 
+public String toString(){
+    String s = "  0 1 2 3 4 5 6 7\n";
+    for(int a = 0; a < 8; a++){
+        s += a + " ";
+        for(int b = 0; b < 8; b++){
+            try{
+                if(board[a][b].getColor() && !board[a][b].isDama()){
+                    s += "w ";
+                }else if(!board[a][b].isDama()){
+                    s += "b ";
+                }else if(board[a][b].getColor()){
+                    s += "W ";
+                }else{
+                    s += "B ";
+                }
+            }
+            catch(NullPointerException e){
+                if((a + b + 1)%2==0){
+                    s += "  ";
+                }else{
+                    s += "■ ";
+                }
+            }
+        }
+        s+= "\n";
+    }
+    return s;
+}
+*/
